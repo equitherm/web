@@ -1,0 +1,31 @@
+/* src/styles/responsive.css */
+
+/* 1200px: Header compaction */
+@media (max-width: 1200px) {
+  .main-layout {
+    grid-template-columns: minmax(280px, 320px) 1fr;
+  }
+}
+
+/* 900px: Single column stack */
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "controls"
+      "chart"
+      "pid";
+  }
+
+  .main-layout > :first-child {
+    grid-row: auto;
+  }
+}
+
+/* 600px: Compact header */
+@media (max-width: 600px) {
+  .app-container {
+    padding: var(--space-2) var(--space-3);
+  }
+}

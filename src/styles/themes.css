@@ -1,0 +1,101 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. THEMES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ESPHOME DARK - Default dark theme */
+[data-theme="esphome"] {
+  --bg-primary: #1c2028;
+  --bg-secondary: #23272e;
+  --bg-card: #282d36;
+  --bg-card-hover: #2e343e;
+  --text-primary: #eff0f3;
+  --text-secondary: #b4b8c1;
+  --text-muted: #6b7280;
+  --accent-primary: #18bcf2;
+  --accent-secondary: #5dade2;
+  --accent-tertiary: #00979d;
+  --accent-glow: rgba(24, 188, 242, 0.25);
+  --border-color: #3a404a;
+  --success: #7cb342;
+  --warning: #ffcc32;
+  --chart-line: #18bcf2;
+  --chart-fill: rgba(24, 188, 242, 0.08);
+  --chart-point: #5dade2;
+  --chart-grid: rgba(24, 188, 242, 0.08);
+  --font-display: 'Figtree', sans-serif;
+  --font-body: 'Figtree', sans-serif;
+  --atmosphere-1: radial-gradient(ellipse at 10% 0%, rgba(24, 188, 242, 0.08) 0%, transparent 50%);
+  --atmosphere-2: radial-gradient(ellipse at 90% 100%, rgba(93, 173, 226, 0.06) 0%, transparent 40%);
+
+  /* Highlight.js theme (atom-one-dark for YAML) */
+  --hljs-bg: #282c34;
+  --hljs-bg-gutter: #21252b;
+  --hljs-color: #abb2bf;
+  --hljs-gutter-color: #636d83;
+  --hljs-comment: #5c6370;
+  --hljs-attr: #e06c75;
+  --hljs-string: #98c379;
+  --hljs-number: #d19a66;
+  --hljs-bullet: #56b6c2;
+  --hljs-keyword: #c678dd;
+  --hljs-literal: #56b6c2;
+  --hljs-meta: #61afef;
+}
+
+/* ESPHOME LIGHT THEME - Starlight-compatible Light variant */
+[data-theme="esphome-light"] {
+  /* ===== Starlight Accent Scale (cyan/teal) ===== */
+  --sl-color-accent-low: #ecfeff;
+  --sl-color-accent: #0288d1;
+  --sl-color-accent-high: #5dade2;
+
+  /* ===== Starlight Gray Scale (light mode) ===== */
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #f8f9fa;
+  --sl-color-gray-2: #f2f4f6;
+  --sl-color-gray-3: #e5e7eb;
+  --sl-color-gray-4: #d1d5db;
+  --sl-color-gray-5: #9ca3af;
+  --sl-color-gray-6: #6b7280;
+  --sl-color-gray-7: #374151;
+  --sl-color-black: #1a1a1a;
+
+  /* ===== App-specific mappings ===== */
+  --bg-primary: var(--sl-color-gray-1);
+  --bg-secondary: var(--sl-color-gray-2);
+  --bg-card: var(--sl-color-white);
+  --bg-card-hover: var(--sl-color-gray-2);
+  --text-primary: var(--sl-color-black);
+  --text-secondary: var(--sl-color-gray-6);
+  --text-muted: var(--sl-color-gray-5);
+  --accent-primary: var(--sl-color-accent);
+  --accent-secondary: var(--sl-color-accent-high);
+  --accent-tertiary: #00979d;
+  --accent-glow: rgba(2, 136, 209, 0.12);
+  --border-color: var(--sl-color-gray-3);
+  --success: #689f38;
+  --warning: #ffa000;
+  --chart-line: #0288d1;
+  --chart-fill: rgba(24, 188, 242, 0.12);
+  --chart-point: #5dade2;
+  --chart-grid: rgba(24, 188, 242, 0.06);
+  --font-display: 'Figtree', sans-serif;
+  --font-body: 'Figtree', sans-serif;
+  --atmosphere-1: radial-gradient(ellipse at 10% 0%, rgba(2, 136, 209, 0.06) 0%, transparent 50%);
+  --atmosphere-2: radial-gradient(ellipse at 90% 100%, rgba(93, 173, 226, 0.04) 0%, transparent 40%);
+
+  /* Highlight.js theme (atom-one-light for YAML) */
+  --hljs-bg: #fafafa;
+  --hljs-bg-gutter: #f0f0f0;
+  --hljs-color: #383a42;
+  --hljs-gutter-color: #9ca3af;
+  --hljs-comment: #a0a1a7;
+  --hljs-attr: #e45649;
+  --hljs-string: #50a14f;
+  --hljs-number: #986801;
+  --hljs-bullet: #0184bb;
+  --hljs-keyword: #a626a4;
+  --hljs-literal: #0184bb;
+  --hljs-meta: #4078f2;
+}
+

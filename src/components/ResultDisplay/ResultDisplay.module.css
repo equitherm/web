@@ -1,0 +1,183 @@
+/* src/components/ResultDisplay/ResultDisplay.module.css */
+.section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.inputHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+}
+
+.inputLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.inputValue {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.inputSlider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sliderEnd {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.cold {
+  color: #4fc3f7;
+}
+
+.warm {
+  color: #ff8a50;
+}
+
+.tempSlider {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  -webkit-appearance: none;
+  cursor: grab;
+  /* Gradient fill using CSS vars */
+  --range: calc(var(--max) - var(--min));
+  --pct: calc((var(--v) - var(--min)) / var(--range) * 100%);
+  background: linear-gradient(
+    to right,
+    #4fc3f7 0%,
+    #4fc3f7 var(--pct),
+    var(--bg-secondary) var(--pct)
+  );
+}
+
+.tempSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 3px solid var(--accent-primary);
+  cursor: grab;
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.transform {
+  width: 40px;
+}
+
+.transform svg {
+  width: 28px;
+  height: 28px;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* PID correction display */
+.pidCorrection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 70px;
+}
+
+.pidLabel {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pidValue {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.pidValue.positive {
+  color: #4caf50;
+}
+
+.pidValue.negative {
+  color: #f44336;
+}
+
+.output {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 90px;
+}
+
+.outputLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.outputValue {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  padding-right: 0.7em;
+}
+
+.outputUnit {
+  position: absolute;
+  right: 0;
+  top: 0.1em;
+  font-size: 0.4em;
+  opacity: 0.7;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.statusText {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
