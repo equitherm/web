@@ -1,98 +1,72 @@
-/* src/components/ControlsCard/SliderControl.module.css */
-/* Option C: Stacked instrument layout */
+/* SliderControl.module.css */
+/* Complex selectors for shadcn Slider component overrides */
 
-.control {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 1rem;
+/* Track styling - targets SliderPrimitive.Track (first span child) */
+.sliderTrack > span:first-child {
+  height: 6px;
+  border-radius: 3px;
+  background: hsl(var(--secondary));
 }
 
-.control:last-child {
-  margin-bottom: 0;
+/* Range (filled portion) - targets SliderPrimitive.Range */
+.sliderTrack > span:first-child > span {
+  background: hsl(var(--primary));
 }
 
-/* Row 1: Header with label + tooltip */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Thumb - targets SliderPrimitive.Thumb (button with role="slider") */
+.sliderTrack [role="slider"] {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  border: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: none;
 }
 
-.labelText {
+.sliderTrack [role="slider"]:hover {
+  background: hsl(var(--primary));
+}
+
+.sliderTrack [role="slider"]:focus {
+  ring: 0;
+  ring-offset: 0;
+}
+
+.sliderTrack [role="slider"]:focus-visible {
+  ring: 2px;
+  ring-color: hsl(var(--primary));
+}
+
+/* Label styling */
+.label {
   font-size: 0.65rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: hsl(var(--muted-foreground));
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-/* Row 2: Value (hero) */
-.value {
-  font-family: 'IBM Plex Mono', monospace;
+/* Hero value display */
+.valueHero {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--accent-primary);
+  color: hsl(var(--primary));
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
-/* Row 3: Slider with anchors */
-.sliderRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sliderRow input[type="range"] {
-  flex: 1;
-  height: 6px;
-  border-radius: 3px;
-  outline: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-  /* Filled track using CSS custom property */
-  --pct: 50%;
-  background: linear-gradient(
-    to right,
-    var(--accent-primary) 0%,
-    var(--accent-primary) var(--pct),
-    var(--bg-secondary) var(--pct),
-    var(--bg-secondary) 100%
-  );
-}
-
-.sliderRow input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.sliderRow input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* Min/Max anchors */
+/* Anchor values (min/max labels) */
 .anchor {
-  font-family: 'IBM Plex Mono', monospace;
   font-size: 0.6rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: hsl(var(--muted-foreground));
   white-space: nowrap;
   flex-shrink: 0;
   min-width: 1.75rem;
 }
 
-.anchor:last-child {
+.anchorRight {
   text-align: right;
 }

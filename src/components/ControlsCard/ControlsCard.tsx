@@ -2,7 +2,8 @@
 import { useStore } from '../../store/useStore';
 import { SliderControl } from './SliderControl';
 import { InfoTooltip } from './InfoTooltip';
-import styles from './ControlsCard.module.css';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Tooltip icons as SVG components
 const SetpointIcon = () => (
@@ -54,153 +55,160 @@ export function ControlsCard() {
   const setCurveParam = useStore(s => s.setCurveParam);
 
   return (
-    <aside className={styles.card}>
-      <section className={styles.primary}>
-        <SliderControl
-          id="t_target"
-          label="Room Setpoint"
-          min={16}
-          max={26}
-          step={0.5}
-          value={curve.tTarget}
-          unit="°C"
-          onChange={v => setCurveParam('tTarget', v)}
-          tooltip={
-            <InfoTooltip title="Room Setpoint" icon={<SetpointIcon />}>
-              <p>The <strong>target indoor temperature</strong> you want to maintain.</p>
-              <p>Typical range: 18-22°C for comfort.</p>
-            </InfoTooltip>
-          }
-        />
+    <aside>
+      <Card className="p-4">
+      <Tabs defaultValue="basic" className="w-full">
+        <TabsList className="w-full">
+          <TabsTrigger value="basic" className="flex-1">Basic</TabsTrigger>
+          <TabsTrigger value="advanced" className="flex-1">Advanced</TabsTrigger>
+        </TabsList>
 
-        <SliderControl
-          id="hc"
-          label="Heat Curve (hc)"
-          min={0.5}
-          max={3}
-          step={0.05}
-          value={curve.hc}
-          unit=""
-          onChange={v => setCurveParam('hc', v)}
-          tooltip={
-            <InfoTooltip title="Heat Curve Coefficient" icon={<HeatCurveIcon />}>
-              <p>Controls how <strong>aggressively</strong> flow temperature increases as it gets colder outside.</p>
-              <p>Higher = steeper curve. Start with 0.9 and adjust based on system response.</p>
-            </InfoTooltip>
-          }
-        />
+        <TabsContent value="basic" className="mt-4">
+          <SliderControl
+            id="t_target"
+            label="Room Setpoint"
+            min={16}
+            max={26}
+            step={0.5}
+            value={curve.tTarget}
+            unit="°C"
+            onChange={v => setCurveParam('tTarget', v)}
+            tooltip={
+              <InfoTooltip title="Room Setpoint" icon={<SetpointIcon />}>
+                <p>The <strong>target indoor temperature</strong> you want to maintain.</p>
+                <p>Typical range: 18-22°C for comfort.</p>
+              </InfoTooltip>
+            }
+          />
 
-        <SliderControl
-          id="n"
-          label="Exponent (n)"
-          min={1.0}
-          max={2.0}
-          step={0.01}
-          value={curve.n}
-          unit=""
-          onChange={v => setCurveParam('n', v)}
-          tooltip={
-            <InfoTooltip title="Curve Exponent" icon={<span>n</span>}>
-              <p>Controls the <strong>non-linearity</strong> of the heating curve.</p>
-              <p><code>ΔT<sup>1/n</sup></code></p>
-              <p>Lower values (1.0-1.2) = more aggressive at extremes. Higher values (1.5-2.0) = gentler curve. Most systems work well at 1.25.</p>
-            </InfoTooltip>
-          }
-        />
+          <SliderControl
+            id="hc"
+            label="Heat Curve (hc)"
+            min={0.5}
+            max={3}
+            step={0.05}
+            value={curve.hc}
+            unit=""
+            onChange={v => setCurveParam('hc', v)}
+            tooltip={
+              <InfoTooltip title="Heat Curve Coefficient" icon={<HeatCurveIcon />}>
+                <p>Controls how <strong>aggressively</strong> flow temperature increases as it gets colder outside.</p>
+                <p>Higher = steeper curve. Start with 0.9 and adjust based on system response.</p>
+              </InfoTooltip>
+            }
+          />
 
-        <SliderControl
-          id="shift"
-          label="Shift"
-          min={-15}
-          max={15}
-          step={0.5}
-          value={curve.shift}
-          unit="°C"
-          onChange={v => setCurveParam('shift', v)}
-          tooltip={
-            <InfoTooltip title="Temperature Shift" icon={<ShiftIcon />}>
-              <p>A <strong>constant offset</strong> added to the calculated flow temperature.</p>
-              <p>Use to fine-tune the curve up (+) or down (-) without changing its shape.</p>
-            </InfoTooltip>
-          }
-        />
-      </section>
+          <SliderControl
+            id="n"
+            label="Exponent (n)"
+            min={1.0}
+            max={2.0}
+            step={0.01}
+            value={curve.n}
+            unit=""
+            onChange={v => setCurveParam('n', v)}
+            tooltip={
+              <InfoTooltip title="Curve Exponent" icon={<span>n</span>}>
+                <p>Controls the <strong>non-linearity</strong> of the heating curve.</p>
+                <p><code>ΔT<sup>1/n</sup></code></p>
+                <p>Lower values (1.0-1.2) = more aggressive at extremes. Higher values (1.5-2.0) = gentler curve. Most systems work well at 1.25.</p>
+              </InfoTooltip>
+            }
+          />
 
-      <details className={styles.advanced}>
-        <summary>Advanced Settings</summary>
+          <SliderControl
+            id="shift"
+            label="Shift"
+            min={-15}
+            max={15}
+            step={0.5}
+            value={curve.shift}
+            unit="°C"
+            onChange={v => setCurveParam('shift', v)}
+            tooltip={
+              <InfoTooltip title="Temperature Shift" icon={<ShiftIcon />}>
+                <p>A <strong>constant offset</strong> added to the calculated flow temperature.</p>
+                <p>Use to fine-tune the curve up (+) or down (-) without changing its shape.</p>
+              </InfoTooltip>
+            }
+          />
+        </TabsContent>
 
-        <SliderControl
-          id="min_flow"
-          label="Min Flow"
-          min={15}
-          max={35}
-          step={1}
-          value={curve.minFlow}
-          unit="°C"
-          onChange={v => setCurveParam('minFlow', v)}
-          tooltip={
-            <InfoTooltip title="Minimum Flow Temperature" icon={<MinFlowIcon />}>
-              <p>The <strong>lowest allowed</strong> flow temperature, even when it's warm outside.</p>
-              <p>Protects the boiler and ensures proper circulation.</p>
-            </InfoTooltip>
-          }
-        />
+        <TabsContent value="advanced" className="mt-4">
+          <SliderControl
+            id="min_flow"
+            label="Min Flow"
+            min={15}
+            max={35}
+            step={1}
+            value={curve.minFlow}
+            unit="°C"
+            onChange={v => setCurveParam('minFlow', v)}
+            tooltip={
+              <InfoTooltip title="Minimum Flow Temperature" icon={<MinFlowIcon />}>
+                <p>The <strong>lowest allowed</strong> flow temperature, even when it's warm outside.</p>
+                <p>Protects the boiler and ensures proper circulation.</p>
+              </InfoTooltip>
+            }
+          />
 
-        <SliderControl
-          id="max_flow"
-          label="Max Flow"
-          min={50}
-          max={90}
-          step={1}
-          value={curve.maxFlow}
-          unit="°C"
-          onChange={v => setCurveParam('maxFlow', v)}
-          tooltip={
-            <InfoTooltip title="Maximum Flow Temperature" icon={<MaxFlowIcon />}>
-              <p>The <strong>highest allowed</strong> flow temperature at extreme cold.</p>
-              <p>Limits protect floor pipes and prevent overheating.</p>
-            </InfoTooltip>
-          }
-        />
+          <SliderControl
+            id="max_flow"
+            label="Max Flow"
+            min={50}
+            max={90}
+            step={1}
+            value={curve.maxFlow}
+            unit="°C"
+            onChange={v => setCurveParam('maxFlow', v)}
+            tooltip={
+              <InfoTooltip title="Maximum Flow Temperature" icon={<MaxFlowIcon />}>
+                <p>The <strong>highest allowed</strong> flow temperature at extreme cold.</p>
+                <p>Limits protect floor pipes and prevent overheating.</p>
+              </InfoTooltip>
+            }
+          />
 
-        <SliderControl
-          id="t_out_min"
-          label="Outdoor Min"
-          min={-30}
-          max={5}
-          step={1}
-          value={curve.tOutMin}
-          unit="°C"
-          onChange={v => setCurveParam('tOutMin', v)}
-          tooltip={
-            <InfoTooltip title="Outdoor Temperature Minimum" icon={<OutMinIcon />}>
-              <p>The <strong>coldest outdoor temperature</strong> in your climate for curve design.</p>
-              <p>Typical values: -20°C (cold), -10°C (moderate).</p>
-            </InfoTooltip>
-          }
-        />
+          <SliderControl
+            id="t_out_min"
+            label="Outdoor Min"
+            min={-30}
+            max={5}
+            step={1}
+            value={curve.tOutMin}
+            unit="°C"
+            onChange={v => setCurveParam('tOutMin', v)}
+            tooltip={
+              <InfoTooltip title="Outdoor Temperature Minimum" icon={<OutMinIcon />}>
+                <p>The <strong>coldest outdoor temperature</strong> in your climate for curve design.</p>
+                <p>Typical values: -20°C (cold), -10°C (moderate).</p>
+              </InfoTooltip>
+            }
+          />
 
-        <SliderControl
-          id="t_out_max"
-          label="Outdoor Max"
-          min={0}
-          max={30}
-          step={1}
-          value={curve.tOutMax}
-          unit="°C"
-          onChange={v => setCurveParam('tOutMax', v)}
-          tooltip={
-            <InfoTooltip title="Outdoor Temperature Maximum" icon={<OutMaxIcon />}>
-              <p>The <strong>warmest outdoor temperature</strong> where heating is still needed.</p>
-              <p>Usually 15-20°C. Below this, heating activates.</p>
-            </InfoTooltip>
-          }
-        />
-      </details>
+          <SliderControl
+            id="t_out_max"
+            label="Outdoor Max"
+            min={0}
+            max={30}
+            step={1}
+            value={curve.tOutMax}
+            unit="°C"
+            onChange={v => setCurveParam('tOutMax', v)}
+            tooltip={
+              <InfoTooltip title="Outdoor Temperature Maximum" icon={<OutMaxIcon />}>
+                <p>The <strong>warmest outdoor temperature</strong> where heating is still needed.</p>
+                <p>Usually 15-20°C. Below this, heating activates.</p>
+              </InfoTooltip>
+            }
+          />
+        </TabsContent>
+      </Tabs>
 
-      <div className={styles.formula}>
-        <code>t_flow = t_target + shift + hc × ΔT<sup>1/n</sup></code>
+      <div className="bg-secondary rounded-md p-2 text-center mt-4">
+        <code className="font-mono text-xs text-secondary-foreground">t_flow = t_target + shift + hc × ΔT<sup>1/n</sup></code>
       </div>
+      </Card>
     </aside>
   );
 }

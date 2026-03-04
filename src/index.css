@@ -1,6 +1,5 @@
-/* src/index.css */
-@import './styles/tokens.css';
-@import './styles/themes.css';
-@import './styles/base.css';
-@import './styles/responsive.css';
+/* Global styles */
+@import './styles/shadcn.css';
+
+/* Syntax highlighting (keep for highlight.js) */
 @import './styles/highlight.css';

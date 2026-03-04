@@ -1,7 +1,7 @@
 // src/components/PIDPanel/GainControls.tsx
 import { useStore } from '../../store/useStore';
 import { InfoTooltip } from '../ControlsCard/InfoTooltip';
-import styles from './PIDPanel.module.css';
+import { SliderVariant } from '@/components/ui/slider-variants';
 
 const ROOM_TEMP_CONFIG = {
   offset:   { min: -5, max: 5, step: 0.1, label: 'Room Offset' },
@@ -18,12 +18,11 @@ interface GainInstrumentProps {
   unit?: string;
   tooltipTitle?: string;
   tooltipContent?: React.ReactNode;
+  tooltipIcon?: React.ReactNode;
 }
 
 // Instantaneous control (affects curve)
-function GainInstrument({ label, min, max, step, value, onChange, unit = '', tooltipTitle, tooltipContent }: GainInstrumentProps) {
-  const pct = ((value - min) / (max - min)) * 100;
-
+function GainInstrument({ label, min, max, step, value, onChange, unit = '', tooltipTitle, tooltipContent, tooltipIcon }: GainInstrumentProps) {
   const formatAnchor = (val: number) => {
     if (val < 0) return `${val}${unit}`;
     if (unit === '°') return `${val}°`;
@@ -31,30 +30,30 @@ function GainInstrument({ label, min, max, step, value, onChange, unit = '', too
   };
 
   return (
-    <div className={styles.gainInstrument}>
-      <div className={styles.gainHeader}>
-        <div className={styles.gainLabelWithInfo}>
-          <span className={styles.gainLabelText}>{label}</span>
+    <div className="flex flex-col gap-1">
+      <div className="flex items-baseline justify-between">
+        <div className="flex items-center gap-1">
+          <span className="text-[0.6rem] font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
           {tooltipTitle && (
-            <InfoTooltip title={tooltipTitle} position="sideLeft" size="small">
+            <InfoTooltip title={tooltipTitle} icon={tooltipIcon} position="sideLeft" size="small">
               {tooltipContent}
             </InfoTooltip>
           )}
         </div>
-        <span className={styles.gainHeroValue}>{value.toFixed(unit === '°' ? 1 : 2)}{unit}</span>
+        <span className="font-mono text-lg font-bold text-primary leading-none">{value.toFixed(unit === '°' ? 1 : 2)}{unit}</span>
       </div>
-      <div className={styles.gainSliderRow}>
-        <span className={styles.gainAnchor}>{formatAnchor(min)}</span>
-        <input
-          type="range"
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[0.55rem] font-medium text-muted-foreground whitespace-nowrap flex-shrink-0 min-w-[1.5rem]">{formatAnchor(min)}</span>
+        <SliderVariant
+          variant="primary"
           min={min}
           max={max}
           step={step}
-          value={value}
-          onChange={e => onChange(parseFloat((e.target as HTMLInputElement).value))}
-          style={{ '--pct': `${pct}%` } as React.CSSProperties}
+          value={[value]}
+          onValueChange={(vals) => onChange(vals[0])}
+          className="flex-1 cursor-pointer"
         />
-        <span className={styles.gainAnchor}>{formatAnchor(max)}</span>
+        <span className="font-mono text-[0.55rem] font-medium text-muted-foreground whitespace-nowrap flex-shrink-0 min-w-[1.5rem] text-right">{formatAnchor(max)}</span>
       </div>
     </div>
   );
@@ -67,44 +66,44 @@ interface TimeDomainInstrumentProps {
   step: number;
   value: number;
   onChange: (value: number) => void;
+  tooltipTitle?: string;
   tooltipContent?: React.ReactNode;
+  tooltipIcon?: React.ReactNode;
 }
 
 // Time-domain instrument (YAML export only, no curve impact)
-function TimeDomainInstrument({ label, min, max, step, value, onChange, tooltipContent }: TimeDomainInstrumentProps) {
-  const pct = ((value - min) / (max - min)) * 100;
-
+function TimeDomainInstrument({ label, min, max, step, value, onChange, tooltipTitle, tooltipContent, tooltipIcon }: TimeDomainInstrumentProps) {
   const formatAnchor = (val: number) => {
     if (val < 0) return `${val}`;
     return `${val}`;
   };
 
   return (
-    <div className={styles.timeDomainInstrument}>
-      <div className={styles.timeDomainHeader}>
-        <div className={styles.timeDomainLabelRow}>
-          <span className={styles.gainLabelText}>{label}</span>
-          <span className={styles.yamlBadge}>YAML</span>
+    <div className="flex flex-col gap-0.5 opacity-85">
+      <div className="flex items-baseline justify-between">
+        <div className="flex items-center gap-1">
+          <span className="text-[0.6rem] font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
           {tooltipContent && (
-            <InfoTooltip title="Time-domain parameter" position="sideLeft" size="small">
+            <InfoTooltip title={tooltipTitle || 'Time-domain parameter'} icon={tooltipIcon} position="sideLeft" size="small">
               {tooltipContent}
             </InfoTooltip>
           )}
+          <span className="text-[0.45rem] font-bold text-muted-foreground bg-secondary py-0.5 px-1 rounded-[2px] uppercase tracking-wider border border-border">YAML</span>
         </div>
-        <span className={styles.timeDomainValue}>{value.toFixed(2)}</span>
+        <span className="font-mono text-sm font-semibold text-secondary-foreground">{value.toFixed(2)}</span>
       </div>
-      <div className={styles.timeDomainSliderRow}>
-        <span className={styles.gainAnchor}>{formatAnchor(min)}</span>
-        <input
-          type="range"
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-[0.55rem] font-medium text-muted-foreground whitespace-nowrap flex-shrink-0 min-w-[1.5rem]">{formatAnchor(min)}</span>
+        <SliderVariant
+          variant="ghost"
           min={min}
           max={max}
           step={step}
-          value={value}
-          onChange={e => onChange(parseFloat((e.target as HTMLInputElement).value))}
-          style={{ '--pct': `${pct}%` } as React.CSSProperties}
+          value={[value]}
+          onValueChange={(vals) => onChange(vals[0])}
+          className="flex-1 cursor-pointer opacity-70 hover:opacity-100"
         />
-        <span className={styles.gainAnchor}>{formatAnchor(max)}</span>
+        <span className="font-mono text-[0.55rem] font-medium text-muted-foreground whitespace-nowrap flex-shrink-0 min-w-[1.5rem] text-right">{formatAnchor(max)}</span>
       </div>
     </div>
   );
@@ -116,11 +115,11 @@ export function GainControls() {
   const roomConfig = ROOM_TEMP_CONFIG[pid.mode];
 
   return (
-    <div className={styles.gainsSection}>
-      <span className={styles.sectionLabel}>Gains</span>
+    <div className="px-4 py-3 border-b border-border">
+      <span className="block text-[0.65rem] font-semibold text-muted-foreground uppercase tracking-widest mb-3">Gains</span>
 
       {/* Instantaneous - affects curve */}
-      <div className={styles.gainInstruments}>
+      <div className="flex flex-col gap-3">
         <GainInstrument
           label={roomConfig.label}
           min={roomConfig.min}
@@ -138,7 +137,8 @@ export function GainControls() {
           step={0.1}
           value={pid.kp}
           onChange={v => setPidParam('kp', v)}
-          tooltipTitle="Proportional Gain (Kp)"
+          tooltipTitle="Proportional Gain"
+          tooltipIcon={<span>Kp</span>}
           tooltipContent={
             <>
               <p>How strongly the system reacts to the <strong>current error</strong> (room vs setpoint).</p>
@@ -150,16 +150,16 @@ export function GainControls() {
       </div>
 
       {/* Time-domain - YAML export only */}
-      <div className={styles.timeDomainSubsection}>
-        <div className={styles.timeDomainSectionHeader}>
-          <span className={styles.subsectionLabel}>Ki / Kd (Time-domain)</span>
+      <div className="mt-3 pt-3 border-t border-dashed border-border">
+        <div className="flex items-center gap-1.5 mb-2">
+          <span className="text-[0.55rem] font-semibold text-muted-foreground uppercase tracking-widest opacity-80">Ki / Kd (Time-domain)</span>
           <InfoTooltip title="Time-domain parameters" icon={<span>⏱</span>} position="sideLeft" size="small">
             <p><strong>Export only</strong> — These values require real-time sensor data over time.</p>
             <p>Ki (integral) accumulates error. Kd (derivative) measures rate of change.</p>
             <p>They won't affect the curve preview but will be included in your ESPHome YAML.</p>
           </InfoTooltip>
         </div>
-        <div className={styles.timeDomainInstruments}>
+        <div className="flex flex-col gap-2">
           <TimeDomainInstrument
             label="Ki — Integral"
             min={0}
@@ -167,6 +167,8 @@ export function GainControls() {
             step={0.01}
             value={pid.ki}
             onChange={v => setPidParam('ki', v)}
+            tooltipTitle="Integral Gain"
+            tooltipIcon={<span>Ki</span>}
             tooltipContent={
               <>
                 <p>Accumulates error over time to eliminate <strong>steady-state offset</strong>.</p>
@@ -182,6 +184,8 @@ export function GainControls() {
             step={0.05}
             value={pid.kd}
             onChange={v => setPidParam('kd', v)}
+            tooltipTitle="Derivative Gain"
+            tooltipIcon={<span>Kd</span>}
             tooltipContent={
               <>
                 <p>Predicts future error by measuring the <strong>rate of change</strong>.</p>

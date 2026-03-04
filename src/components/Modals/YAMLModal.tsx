@@ -4,24 +4,27 @@ import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
 import { useStore } from '../../store/useStore';
 import { generateYAML } from '../../config/yaml';
-import { showToast } from '../Toast/Toast';
-import styles from './Modal.module.css';
+import { showToast } from '@/lib/toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { cn } from '@/lib/utils';
+import styles from './YAMLModal.module.css';
 
 // Register YAML language
 hljs.registerLanguage('yaml', yaml);
 
 // SVG Icons
 const LayersIcon = () => (
-  <svg className={styles.yamlIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M12 2L2 7l10 5 10-5-10-5z"/>
     <path d="M2 17l10 5 10-5"/>
     <path d="M2 12l10 5 10-5"/>
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-    <path d="M18 6L6 18M6 6l12 12"/>
   </svg>
 );
 
@@ -81,87 +84,82 @@ export function YAMLModal({ isOpen, onClose }: YAMLModalProps) {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Escape') onClose();
-  };
-
   useEffect(() => {
     if (isOpen) setCopied(false);
   }, [isOpen]);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
 
   const lineCount = rawYaml.split('\n').length;
   const lineNumbers = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
 
   return (
-    <div className={styles.overlay} onClick={onClose} onKeyDown={handleKeyDown}>
-      <div className={styles.yamlEditor} onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div className={styles.yamlHeader}>
-          <div className={styles.yamlTab}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[700px] p-0 gap-0 overflow-hidden">
+        {/* Header with Tab Style */}
+        <DialogHeader className="flex flex-row items-center justify-between p-3 bg-card border-b border-border">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-t-md border border-border border-b-0 -mb-3">
             <LayersIcon />
-            <span className={styles.yamlFilename}>equitherm.yaml</span>
+            <DialogTitle className="text-sm font-medium">equitherm.yaml</DialogTitle>
           </div>
-          <button className={styles.yamlClose} onClick={onClose} title="Close">
-            <CloseIcon />
-          </button>
-        </div>
+        </DialogHeader>
 
         {/* Options Bar */}
-        <div className={styles.yamlOptions}>
-          <label className={styles.yamlOption}>
-            <input type="checkbox" checked={includeSensors} onChange={e => setIncludeSensors((e.target as HTMLInputElement).checked)} />
+        <div className="flex gap-4 px-4 py-2 bg-secondary border-b border-border">
+          <label className="flex items-center gap-2 text-xs text-secondary-foreground cursor-pointer">
+            <Switch
+              checked={includeSensors}
+              onCheckedChange={setIncludeSensors}
+            />
             <span>Diagnostic sensors</span>
           </label>
-          <label className={styles.yamlOption}>
-            <input type="checkbox" checked={includeNumbers} onChange={e => setIncludeNumbers((e.target as HTMLInputElement).checked)} />
+          <label className="flex items-center gap-2 text-xs text-secondary-foreground cursor-pointer">
+            <Switch
+              checked={includeNumbers}
+              onCheckedChange={setIncludeNumbers}
+            />
             <span>Runtime tuning</span>
           </label>
         </div>
 
         {/* Code Area */}
-        <div className={styles.yamlCodeWrapper}>
-          <div className={styles.yamlLineNumbers}>{lineNumbers}</div>
-          <pre className={styles.yamlCode}>
-            <code className="language-yaml hljs" dangerouslySetInnerHTML={{ __html: highlightedYaml }} />
+        <div className={styles.codeArea}>
+          <div className={styles.lineNumbers}>{lineNumbers}</div>
+          <pre className={styles.codeContent}>
+            <code
+              className={cn('language-yaml', 'hljs', styles.codeHighlight)}
+              dangerouslySetInnerHTML={{ __html: highlightedYaml }}
+            />
           </pre>
         </div>
 
         {/* Status Bar */}
-        <div className={styles.yamlStatusbar}>
-          <div className={styles.yamlStatusLeft}>
+        <div className="flex items-center justify-between px-4 py-2 bg-card border-t border-border text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
             <a
               href="https://esphome.io/components/climate/equitherm.html"
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.yamlDocsLink}
+              className="flex items-center gap-1 text-primary hover:opacity-80 transition-colors"
             >
               <BookIcon />
               Docs
             </a>
-            <span className={styles.yamlSeparator}>|</span>
+            <span className="text-border">|</span>
             <span>YAML</span>
-            <span className={styles.yamlSeparator}>|</span>
+            <span className="text-border">|</span>
             <span>{lineCount} lines</span>
           </div>
-          <button className={`${styles.yamlCopyBtn} ${copied ? styles.copied : ''}`} onClick={handleCopy}>
-            {copied ? '✓ Copied!' : 'Copy'}
-          </button>
+          <Button
+            size="sm"
+            className={cn(
+              'h-7 px-4 text-xs font-semibold',
+              copied && 'bg-success text-success-foreground hover:bg-success'
+            )}
+            onClick={handleCopy}
+          >
+            {copied ? 'Copied!' : 'Copy'}
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 // Theme registry
-export const THEMES = ['esphome', 'esphome-light'] as const;
+export const THEMES = ['dark', 'light'] as const;
 type Theme = typeof THEMES[number];
 
 interface ThemeContextValue {
@@ -20,7 +20,8 @@ const getStoredTheme = (): Theme | null => {
   if (typeof window === 'undefined') return null;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return THEMES.includes(stored as Theme) ? (stored as Theme) : null;
+    if (!stored) return null;
+    return THEMES.includes(stored as Theme) ? stored as Theme : null;
   } catch {
     return null;
   }
@@ -28,10 +29,10 @@ const getStoredTheme = (): Theme | null => {
 
 // Detect system preference
 const getSystemTheme = (): Theme => {
-  if (typeof window === 'undefined') return 'esphome';
-  return window.matchMedia('(prefers-color-scheme: light)').matches
-    ? 'esphome-light'
-    : 'esphome';
+  if (typeof window === 'undefined') return 'dark';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
@@ -41,20 +42,24 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
-export function ThemeProvider({ children, defaultTheme = 'esphome' }: ThemeProviderProps) {
+export function ThemeProvider({ children, defaultTheme = 'dark' }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(() => {
     return getStoredTheme() || getSystemTheme() || defaultTheme;
   });
 
-  // Apply theme to DOM
+  // Apply theme to DOM using class
   const applyTheme = useCallback((newTheme: Theme) => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', newTheme);
+
+    // Remove existing theme classes
+    root.classList.remove('light', 'dark');
+    // Add new theme class
+    root.classList.add(newTheme);
 
     // Update meta theme-color for mobile
     const metaTheme = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
     if (metaTheme) {
-      metaTheme.content = newTheme === 'esphome-light' ? '#ffffff' : '#1c2028';
+      metaTheme.content = newTheme === 'light' ? '#ffffff' : '#1c2028';
     }
   }, []);
 
@@ -79,10 +84,10 @@ export function ThemeProvider({ children, defaultTheme = 'esphome' }: ThemeProvi
 
   // System preference changes
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: light)');
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       if (!getStoredTheme()) {
-        setThemeState(e.matches ? 'esphome-light' : 'esphome');
+        setThemeState(e.matches ? 'dark' : 'light');
       }
     };
     media.addEventListener('change', handleChange);
@@ -96,7 +101,7 @@ export function ThemeProvider({ children, defaultTheme = 'esphome' }: ThemeProvi
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setThemeState(prev => prev === 'esphome' ? 'esphome-light' : 'esphome');
+    setThemeState(prev => prev === 'dark' ? 'light' : 'dark');
   }, []);
 
   return (
@@ -104,8 +109,8 @@ export function ThemeProvider({ children, defaultTheme = 'esphome' }: ThemeProvi
       theme,
       setTheme,
       toggleTheme,
-      isDark: theme === 'esphome',
-      isLight: theme === 'esphome-light',
+      isDark: theme === 'dark',
+      isLight: theme === 'light',
     }}>
       {children}
     </ThemeContext.Provider>

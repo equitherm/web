@@ -1,306 +1,178 @@
-// src/components/Chart/Chart.tsx
-import { useEffect, useRef } from 'react';
+// packages/web/src/components/Chart/Chart.tsx
+import { useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceDot } from 'recharts';
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+} from '@/components/ui/chart';
 import { useStore } from '../../store/useStore';
-import { useTheme } from '../../contexts/ThemeContext';
-import { computeFlowTemperature, createPIDState, computePID, getRoomTempActual } from '@equitherm-studio/core';
-import type { CurveState, PIDStoreSlice, ComputedStatus } from '../../types';
-import Chart, { type TooltipItem } from 'chart.js/auto';
-import styles from './Chart.module.css';
+import { useComputedFlow } from './useComputedFlow';
+import { useChartData } from './useChartData';
 
-// Type for the chart instance
-type ChartInstance = Chart<'line', { x: number; y: number }[], unknown>;
-
-// Type for PID runtime state
-interface PIDRuntimeState {
-  mode: string;
-  roomTemp: number;
-  kp: number;
-  ki: number;
-  kd: number;
-  deadband?: {
-    enabled: boolean;
-    thresholdHigh: number;
-    thresholdLow: number;
-    kpMultiplier: number;
-  };
-}
+const chartConfig = {
+  equitherm: {
+    label: 'Base',
+    theme: {
+      light: 'hsl(199, 60%, 60%)',
+      dark: 'hsl(198, 70%, 70%)',
+    },
+  },
+  combined: {
+    label: 'With PID',
+    theme: {
+      light: 'hsl(199, 98%, 41%)',
+      dark: 'hsl(198, 90%, 53%)',
+    },
+  },
+} satisfies ChartConfig;
 
 export function HeatingChart() {
-  const curve = useStore(s => s.curve);
-  const pid = useStore(s => s.pid);
-  const tCurrent = useStore(s => s.ui.tCurrent);
-  const setComputed = useStore(s => s.setComputed);
-  const { isDark } = useTheme();
+  const curve = useStore((s) => s.curve);
+  const pid = useStore((s) => s.pid);
+  const tCurrent = useStore((s) => s.ui.tCurrent);
+  const setComputed = useStore((s) => s.setComputed);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<ChartInstance | null>(null);
-  const pidRuntimeRef = useRef<PIDRuntimeState>(createPIDState() as PIDRuntimeState);
-  const rafRef = useRef<number | null>(null);
+  const { equithermFlow, pidCorrection, combinedFlow, status } = useComputedFlow(
+    curve,
+    pid,
+    tCurrent
+  );
 
-  // Sync store PID params to runtime ref when they change
+  const chartData = useChartData(curve, pid.enabled, pidCorrection);
+
+  // Update store with computed values
   useEffect(() => {
-    pidRuntimeRef.current = {
-      ...pidRuntimeRef.current,
-      mode: pid.mode,
-      roomTemp: pid.roomTemp,
-      kp: pid.kp,
-      ki: pid.ki,
-      kd: pid.kd,
-      deadband: {
-        enabled: pid.deadbandEnabled,
-        thresholdHigh: pid.deadbandThresholdHigh,
-        thresholdLow: pid.deadbandThresholdLow,
-        kpMultiplier: pid.deadbandKpMultiplier,
-      },
-    };
-  }, [pid]);
-
-  // Single effect — mount, update, unmount
-  useEffect(() => {
-    // Mount: create chart if not exists
-    if (!chartRef.current && canvasRef.current) {
-      chartRef.current = new Chart(canvasRef.current, buildChartConfig(isDark)) as ChartInstance;
-    }
-
-    // Cancel pending update
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-
-    // Schedule update (including initial)
-    rafRef.current = requestAnimationFrame(() => {
-      if (chartRef.current) {
-        const results = updateChartAndGetResults(
-          chartRef.current,
-          curve,
-          pid,
-          tCurrent,
-          pidRuntimeRef.current,
-          isDark
-        );
-        setComputed(results);
-      }
-      rafRef.current = null;
+    setComputed({
+      flowTemp: combinedFlow,
+      pidRawOutput: pidCorrection,
+      pidScaledOutput: pidCorrection,
+      status,
     });
+  }, [combinedFlow, pidCorrection, status, setComputed]);
 
-    // Cleanup
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [curve, pid, tCurrent, setComputed, isDark]);
-
-  // Unmount only — destroy chart
-  useEffect(() => {
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-        chartRef.current = null;
-      }
-    };
-  }, []);
+  // Current position on the curve - look up exact value from chartData to ensure
+  // ReferenceDot y matches the line's data point byte-for-byte
+  const currentPoint = chartData.find((p) => p.tOutdoor === Math.round(tCurrent));
+  const currentFlowY = pid.enabled
+    ? (currentPoint?.combined ?? combinedFlow)
+    : (currentPoint?.equitherm ?? equithermFlow);
 
   return (
-    <section className={styles.container}>
-      <canvas ref={canvasRef} />
+    <section className="bg-card rounded-xl p-4 border border-border min-h-[400px]">
+      <ChartContainer config={chartConfig} className="h-[350px] w-full">
+        <LineChart data={chartData} accessibilityLayer>
+          <CartesianGrid
+            stroke="hsl(var(--border))"
+            strokeDasharray="3 3"
+            vertical={false}
+          />
+          <XAxis
+            dataKey="tOutdoor"
+            reversed
+            type="number"
+            domain={['dataMin', 'dataMax']}
+            tickLine={false}
+            axisLine={false}
+            tickMargin={10}
+            tick={{
+              fill: 'hsl(var(--muted-foreground))',
+              fontSize: 12,
+              fontFamily: "'IBM Plex Mono', monospace",
+            }}
+            label={{
+              value: 'Outdoor (°C)',
+              position: 'bottom',
+              offset: -5,
+              fill: 'hsl(var(--muted-foreground))',
+              fontSize: 11,
+              fontFamily: "'IBM Plex Mono', monospace",
+            }}
+          />
+          <YAxis
+            domain={['dataMin', 'dataMax']}
+            tickLine={false}
+            axisLine={false}
+            tick={{
+              fill: 'hsl(var(--muted-foreground))',
+              fontSize: 12,
+              fontFamily: "'IBM Plex Mono', monospace",
+            }}
+            label={{
+              value: 'Flow (°C)',
+              angle: -90,
+              position: 'insideLeft',
+              offset: 10,
+              fill: 'hsl(var(--muted-foreground))',
+              fontSize: 11,
+              fontFamily: "'IBM Plex Mono', monospace",
+            }}
+          />
+          <ChartTooltip
+            content={({ active, payload, label }) => {
+              if (!active || !payload?.length) return null;
+              return (
+                <div className="grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                  <div className="font-medium">Outdoor: {label}°C</div>
+                  {payload
+                    .filter((item) => item.value != null)
+                    .map((item) => (
+                      <div key={String(item.dataKey)} className="flex items-center gap-2">
+                        <div
+                          className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <div className="flex flex-1 justify-between gap-4">
+                          <span className="text-muted-foreground">
+                            {chartConfig[item.dataKey as keyof typeof chartConfig]?.label}
+                          </span>
+                          <span className="font-mono font-medium">
+                            {Number(item.value).toFixed(1)}°C
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              );
+            }}
+          />
+
+          {/* Equitherm line - dashed when PID enabled, solid otherwise */}
+          <Line
+            dataKey="equitherm"
+            type="linear"
+            stroke={pid.enabled ? "var(--color-equitherm)" : "var(--color-combined)"}
+            strokeDasharray={pid.enabled ? "5 5" : undefined}
+            strokeWidth={2}
+            dot={false}
+            activeDot={false}
+          />
+
+          {/* Combined line only when PID enabled */}
+          {pid.enabled && (
+            <Line
+              dataKey="combined"
+              type="linear"
+              stroke="var(--color-combined)"
+              strokeWidth={2.5}
+              dot={false}
+              activeDot={{ r: 8, fill: 'var(--color-combined)' }}
+            />
+          )}
+
+          {/* Current position dot - updates independently of lines */}
+          {currentFlowY != null && (
+            <ReferenceDot
+              x={tCurrent}
+              y={currentFlowY}
+              r={6}
+              fill="var(--color-combined)"
+              stroke="hsl(var(--background))"
+              strokeWidth={2}
+            />
+          )}
+        </LineChart>
+      </ChartContainer>
     </section>
   );
-}
-
-// Helper functions for per-point styling
-const mkR = (len: number, idx: number, r: number): number[] =>
-  Array.from({ length: len }, (_, i) => i === idx ? r : 0);
-const mkHR = (len: number, idx: number, r: number): number[] =>
-  Array.from({ length: len }, (_, i) => i === idx ? r : 6);
-const mkC = (len: number, idx: number, c: string): string[] =>
-  Array.from({ length: len }, (_, i) => i === idx ? c : 'transparent');
-
-// Theme colors for chart
-interface ChartThemeColors {
-  chartLine: string;
-  chartFill: string;
-  chartPoint: string;
-  chartText: string;
-  chartGrid: string;
-}
-
-function getChartThemeColors(isDark: boolean): ChartThemeColors {
-  return isDark ? {
-    chartLine: 'rgba(24, 188, 242, 1)',
-    chartFill: 'rgba(24, 188, 242, 0.15)',
-    chartPoint: 'rgba(24, 188, 242, 1)',
-    chartText: 'rgba(255, 255, 255, 0.7)',
-    chartGrid: 'rgba(255, 255, 255, 0.1)',
-  } : {
-    chartLine: 'rgba(0, 151, 157, 1)',
-    chartFill: 'rgba(0, 151, 157, 0.15)',
-    chartPoint: 'rgba(0, 151, 157, 1)',
-    chartText: 'rgba(0, 0, 0, 0.7)',
-    chartGrid: 'rgba(0, 0, 0, 0.1)',
-  };
-}
-
-// Generate chart data points
-function generateChartData(curve: CurveState, tCurrent: number): { data: { x: number; y: number }[]; curIdx: number } {
-  const xSet = new Set<number>();
-  for (let t = curve.tOutMin; t <= curve.tOutMax; t++) xSet.add(t);
-  if (tCurrent >= curve.tOutMin && tCurrent <= curve.tOutMax) {
-    xSet.add(tCurrent);
-  }
-  const xValues = Array.from(xSet).sort((a, b) => a - b);
-  const curIdx = xValues.indexOf(tCurrent);
-  const data = xValues.map(t => ({
-    x: t,
-    y: computeFlowTemperature({
-      tTarget: curve.tTarget, tOutdoor: t, hc: curve.hc, n: curve.n,
-      shift: curve.shift, minFlow: curve.minFlow, maxFlow: curve.maxFlow
-    })
-  }));
-  return { data, curIdx };
-}
-
-// Build Chart.js config
-function buildChartConfig(isDark: boolean) {
-  const theme = getChartThemeColors(isDark);
-  return {
-    type: 'line' as const,
-    data: { datasets: [] },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index' as const, intersect: false },
-      layout: { padding: 8 },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(0,0,0,0.85)',
-          titleFont: { family: "'IBM Plex Mono'", size: 11 },
-          bodyFont: { family: "'IBM Plex Mono'", size: 11 },
-          padding: 10,
-          cornerRadius: 6,
-          callbacks: {
-            title: (items: TooltipItem<'line'>[]) =>
-              items.length ? `Outdoor: ${(items[0].parsed.x as number).toFixed(1)}°C` : '',
-            label: (ctx: TooltipItem<'line'>) =>
-              ctx.raw === null || ctx.parsed.y === null ? '' : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}°C`
-          }
-        }
-      },
-      scales: {
-        x: {
-          type: 'linear' as const,
-          reverse: true,
-          title: { display: true, text: 'Outdoor (°C)', color: theme.chartText, font: { family: "'IBM Plex Mono'", size: 10 } },
-          ticks: { color: theme.chartText, font: { size: 10 } },
-          grid: { color: theme.chartGrid }
-        },
-        y: {
-          title: { display: true, text: 'Flow (°C)', color: theme.chartText, font: { family: "'IBM Plex Mono'", size: 10 } },
-          ticks: { color: theme.chartText, font: { size: 10 } },
-          grid: { color: theme.chartGrid }
-        }
-      },
-      animation: { duration: 300 }
-    }
-  };
-}
-
-// Update chart data and compute results
-function updateChartAndGetResults(
-  chart: ChartInstance,
-  curve: CurveState,
-  pid: PIDStoreSlice,
-  tCurrent: number,
-  pidRuntime: PIDRuntimeState,
-  isDark: boolean
-): { flowTemp: number; pidRawOutput: number; pidScaledOutput: number; status: ComputedStatus } {
-  const { data: equithermData, curIdx } = generateChartData(curve, tCurrent);
-  const theme = getChartThemeColors(isDark);
-
-  // Compute equitherm flow at current outdoor temp
-  const equithermFlow = computeFlowTemperature({
-    tTarget: curve.tTarget, tOutdoor: tCurrent, hc: curve.hc, n: curve.n,
-    shift: curve.shift, minFlow: curve.minFlow, maxFlow: curve.maxFlow
-  });
-
-  // Compute PID correction
-  let pidCorrection = 0;
-  let scaledCorrection = 0;
-  let combinedFlow = equithermFlow;
-
-  if (pid.enabled) {
-    const roomTemp = getRoomTempActual(pidRuntime, curve.tTarget);
-    const pidResult = computePID(pidRuntime, curve.tTarget, roomTemp);
-    pidCorrection = pidResult.total;
-    scaledCorrection = pidCorrection;
-    combinedFlow = Math.max(curve.minFlow, Math.min(curve.maxFlow, equithermFlow + scaledCorrection));
-  }
-
-  // Build datasets
-  const datasets: Chart<'line', { x: number; y: number }[]>['data']['datasets'] = [];
-
-  if (pid.enabled) {
-    // Dashed equitherm line
-    datasets.push({
-      label: 'Equitherm',
-      data: equithermData,
-      borderColor: theme.chartLine,
-      backgroundColor: 'transparent',
-      borderWidth: 2,
-      borderDash: [5, 5],
-      tension: 0.15,
-      pointRadius: 0,
-      pointHoverRadius: 6
-    });
-
-    // Combined line with fill
-    const combinedData = equithermData.map(point => ({
-      x: point.x,
-      y: Math.max(curve.minFlow, Math.min(curve.maxFlow, point.y + pidCorrection))
-    }));
-
-    datasets.push({
-      label: 'Combined',
-      data: combinedData,
-      borderColor: theme.chartLine,
-      backgroundColor: theme.chartFill,
-      borderWidth: 2.5,
-      fill: true,
-      tension: 0.15,
-      pointRadius: mkR(combinedData.length, curIdx, 7),
-      pointHoverRadius: mkHR(combinedData.length, curIdx, 10),
-      pointBackgroundColor: mkC(combinedData.length, curIdx, theme.chartPoint),
-      pointBorderColor: mkC(combinedData.length, curIdx, theme.chartPoint),
-      clip: false
-    });
-  } else {
-    datasets.push({
-      label: 'Flow Temp',
-      data: equithermData,
-      borderColor: theme.chartLine,
-      backgroundColor: theme.chartFill,
-      borderWidth: 2.5,
-      fill: true,
-      tension: 0.15,
-      pointRadius: mkR(equithermData.length, curIdx, 7),
-      pointHoverRadius: mkHR(equithermData.length, curIdx, 10),
-      pointBackgroundColor: mkC(equithermData.length, curIdx, theme.chartPoint),
-      pointBorderColor: mkC(equithermData.length, curIdx, theme.chartPoint),
-      clip: false
-    });
-  }
-
-  chart.data.datasets = datasets;
-  chart.update('none');
-
-  // Compute status
-  const deltaT = curve.tTarget - tCurrent;
-  let status: ComputedStatus = 'standby';
-  if (deltaT > 0) {
-    status = combinedFlow < 45 ? 'heating' : 'high-load';
-  }
-
-  return {
-    flowTemp: combinedFlow,
-    pidRawOutput: pidCorrection,
-    pidScaledOutput: scaledCorrection,
-    status,
-  };
 }

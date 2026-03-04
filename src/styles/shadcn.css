@@ -1,0 +1,13 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   shadcn.css - Entry point for Tailwind CSS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Import modular stylesheets (must precede @tailwind directives) */
+@import './themes.css';
+@import './base.css';
+@import './utilities.css';
+@import './components.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
