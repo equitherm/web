@@ -1,5 +1,6 @@
 // src/store/useStore.ts
 import { create } from 'zustand';
+import { validateCurveParam, validateCurveState } from '@/lib/validation';
 import type { StoreState, CurveState, PIDStoreSlice, ComputedState, PartialStoreConfig } from '../types';
 
 export const useStore = create<StoreState>((set) => ({
@@ -45,9 +46,9 @@ export const useStore = create<StoreState>((set) => ({
     status: 'standby',
   },
 
-  // Typed generic setters
+  // Typed generic setters with validation
   setCurveParam: <K extends keyof CurveState>(k: K, v: CurveState[K]) =>
-    set(s => ({ curve: { ...s.curve, [k]: v } })),
+    set(s => ({ curve: { ...s.curve, [k]: validateCurveParam(s.curve, k, v) } })),
 
   setPidParam: <K extends keyof PIDStoreSlice>(k: K, v: PIDStoreSlice[K]) =>
     set(s => ({ pid: { ...s.pid, [k]: v } })),
@@ -58,7 +59,7 @@ export const useStore = create<StoreState>((set) => ({
     set(s => ({ computed: { ...s.computed, ...v } })),
 
   loadConfig: (config: PartialStoreConfig) => set(state => ({
-    curve: { ...state.curve, ...config.curve },
+    curve: { ...state.curve, ...validateCurveState(config.curve ?? {}) },
     pid:   { ...state.pid,   ...config.pid },
     ui:    { ...state.ui,    ...config.ui },
   })),

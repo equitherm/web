@@ -1,8 +1,8 @@
 // packages/web/src/components/Chart/useComputedFlow.ts
 import { useMemo } from 'react';
 import { computeFlowTemperature, computePID } from '@equitherm-studio/core';
-import { getRoomTempActual } from '../../lib/pid';
-import type { CurveState, PIDStoreSlice, ComputedStatus } from '../../types';
+import { getRoomTempActual } from '@/lib/pid';
+import type { CurveState, PIDStoreSlice, ComputedStatus } from '@/types';
 
 interface ComputedFlowResult {
   equithermFlow: number;

@@ -6,7 +6,7 @@ import {
   ChartContainer,
   ChartTooltip,
 } from '@/components/ui/chart';
-import { useStore } from '../../store/useStore';
+import { useStore } from '@/store/useStore';
 import { useComputedFlow } from './useComputedFlow';
 import { useChartData } from './useChartData';
 
@@ -51,16 +51,28 @@ export function HeatingChart() {
     });
   }, [combinedFlow, pidCorrection, status, setComputed]);
 
-  // Current position on the curve - look up exact value from chartData to ensure
-  // ReferenceDot y matches the line's data point byte-for-byte
-  const currentPoint = chartData.find((p) => p.tOutdoor === Math.round(tCurrent));
+  // Current position on the curve - interpolate y to match Recharts' linear interpolation
+  // This ensures the dot sits exactly on the line at any float x position
+  const floorT = Math.floor(tCurrent);
+  const ceilT = Math.ceil(tCurrent);
+  const lowerPoint = chartData.find((p) => p.tOutdoor === floorT);
+  const upperPoint = chartData.find((p) => p.tOutdoor === ceilT);
+
+  const interpolateY = (lower: number | undefined, upper: number | undefined): number | undefined => {
+    if (lower === undefined || upper === undefined) return undefined;
+    if (floorT === ceilT) return lower; // tCurrent is already an integer
+    const t = (tCurrent - floorT) / (ceilT - floorT); // interpolation factor
+    return lower + (upper - lower) * t;
+  };
+
   const currentFlowY = pid.enabled
-    ? (currentPoint?.combined ?? combinedFlow)
-    : (currentPoint?.equitherm ?? equithermFlow);
+    ? interpolateY(lowerPoint?.combined, upperPoint?.combined) ?? combinedFlow
+    : interpolateY(lowerPoint?.equitherm, upperPoint?.equitherm) ?? equithermFlow;
 
   return (
-    <section className="bg-card rounded-xl p-4 border border-border min-h-[400px]">
-      <ChartContainer config={chartConfig} className="h-[350px] w-full">
+    <section className="@container bg-card rounded-xl p-4 border border-border h-full min-h-[300px] @lg:min-h-[400px] @xl:min-h-[500px] flex flex-col shadow-card">
+      <div className="chart-grid rounded-lg flex-1 min-h-0 overflow-hidden">
+        <ChartContainer config={chartConfig} className="h-full w-full">
         <LineChart data={chartData} accessibilityLayer>
           <CartesianGrid
             stroke="hsl(var(--border))"
@@ -165,14 +177,41 @@ export function HeatingChart() {
             <ReferenceDot
               x={tCurrent}
               y={currentFlowY}
-              r={6}
+              r={8}
               fill="var(--color-combined)"
               stroke="hsl(var(--background))"
-              strokeWidth={2}
+              strokeWidth={3}
+              className="chart-marker-glow"
+              shape={(props: any) => {
+                const { cx, cy } = props;
+                return (
+                  <g>
+                    {/* Outer glow ring */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={14}
+                      fill="var(--color-combined)"
+                      opacity={0.2}
+                      className="animate-pulse"
+                    />
+                    {/* Main dot */}
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={8}
+                      fill="var(--color-combined)"
+                      stroke="hsl(var(--background))"
+                      strokeWidth={3}
+                    />
+                  </g>
+                );
+              }}
             />
           )}
         </LineChart>
       </ChartContainer>
+      </div>
     </section>
   );
 }

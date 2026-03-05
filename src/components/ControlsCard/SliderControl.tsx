@@ -30,19 +30,19 @@ export function SliderControl({ id, label, min, max, step, value, unit, onChange
   };
 
   return (
-    <div className="flex flex-col gap-[0.3rem] mb-4 last:mb-0">
-      {/* Row 1: Label + Tooltip */}
-      <div className="flex items-center justify-between">
-        <span className={styles.label}>{label}</span>
-        {tooltip as React.ReactNode}
+    <div className="flex flex-col gap-1.5 mb-4 last:mb-0">
+      {/* Row 1: Label + Tooltip ... Value (inline) */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5">
+          <span className={styles.label}>{label}</span>
+          {tooltip as React.ReactNode}
+        </div>
+        <span className={cn('font-mono', styles.valueInline)}>
+          {value}{unit}
+        </span>
       </div>
 
-      {/* Row 2: Value (hero) */}
-      <span className={cn('font-mono', styles.valueHero)}>
-        {value}{unit}
-      </span>
-
-      {/* Row 3: Slider with anchors */}
+      {/* Row 2: Slider with anchors */}
       <div className="flex items-center gap-2">
         <span className={cn('font-mono', styles.anchor)}>
           {formatAnchor(min)}

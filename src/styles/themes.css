@@ -1,59 +1,113 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Theme Variables - shadcn/ui CSS variables + App-specific theme variables
+   Equitherm Studio - Digital Control Room Theme System
    ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
 @layer base {
   /* ═════════════════════════════════════════════════════════════════════════
-     LIGHT THEME (default)
+     FLUID TYPOGRAPHY SCALE
      ═════════════════════════════════════════════════════════════════════════ */
   :root {
-    /* --- shadcn/ui Tailwind HSL variables --- */
-    --background: 210 40% 98%;        /* #f8f9fa */
-    --foreground: 0 0% 10%;           /* #1a1a1a */
+    --font-size-fluid-xs: clamp(0.6875rem, 0.625rem + 0.25vi, 0.75rem);
+    --font-size-fluid-sm: clamp(0.8125rem, 0.75rem + 0.25vi, 0.875rem);
+    --font-size-fluid-base: clamp(0.875rem, 0.8125rem + 0.25vi, 1rem);
+    --font-size-fluid-lg: clamp(1rem, 0.9375rem + 0.25vi, 1.125rem);
+    --font-size-fluid-xl: clamp(1.125rem, 1rem + 0.5vi, 1.25rem);
+    --font-size-fluid-2xl: clamp(1.25rem, 1.125rem + 0.5vi, 1.5rem);
+    --font-size-fluid-3xl: clamp(1.5rem, 1.25rem + 1vi, 1.875rem);
+    --font-size-fluid-4xl: clamp(2rem, 1.5rem + 2vi, 3rem);
+    --font-size-fluid-5xl: clamp(2.5rem, 2rem + 2.5vi, 4rem);
+  }
 
-    --card: 0 0% 100%;                /* #ffffff */
-    --card-foreground: 0 0% 10%;
+  /* ═════════════════════════════════════════════════════════════════════════
+     LIGHT THEME
+     ═════════════════════════════════════════════════════════════════════════ */
+  :root {
+    /* Background layers */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 199 98% 41%;           /* #0288d1 */
+    /* Primary - Cool cyan for data/controls */
+    --primary: 188 94% 43%;
     --primary-foreground: 0 0% 100%;
 
+    /* Secondary */
     --secondary: 210 40% 96%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary-foreground: 222 47% 11%;
 
+    /* Muted */
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 199 98% 41%;
+    /* Accent - Warm amber for heating/energy */
+    --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 63%;         /* #ff6b6b (red for danger/delete) */
+    /* Semantic colors */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 76 48% 42%;            /* #689f38 (green for positive states) */
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --hot: 24 100% 65%;               /* #ff8a50 (hot temperature indicator) */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;            /* #e5e7eb */
+    /* Temperature indicators */
+    --hot: 24 95% 53%;
+    --cold: 199 89% 48%;
+
+    /* PID/Correction color */
+    --cool: 239 84% 67%;
+
+    /* Borders */
+    --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 199 98% 41%;
+    --ring: 188 94% 43%;
 
     --radius: 0.5rem;
 
-    /* --- Chart theme variables --- */
-    --chart-1: 199 98% 41%;    /* primary cyan - main chart line */
-    --chart-2: 199 98% 60%;    /* lighter cyan - dashed equitherm line */
+    /* Chart colors */
+    --chart-1: 188 94% 43%;
+    --chart-2: 188 94% 65%;
+    --chart-3: 38 92% 50%;
 
-    /* --- App-specific theme variables --- */
-    --accent-secondary: #5dade2;
-    --font-body: 'Figtree', sans-serif;
-    --atmosphere-1: radial-gradient(ellipse at 10% 0%, rgba(2, 136, 209, 0.06) 0%, transparent 50%);
-    --atmosphere-2: radial-gradient(ellipse at 90% 100%, rgba(93, 173, 226, 0.04) 0%, transparent 40%);
+    /* App-specific */
+    --font-display: 'JetBrains Mono', monospace;
+    --font-ui: 'DM Sans', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
 
-    /* Highlight.js theme (atom-one-light for YAML) */
+    /* Panel backgrounds */
+    --panel-bg: 0 0% 100%;
+    --panel-border: 214 32% 91%;
+
+    /* Glow effects */
+    --glow-heating: 0 0 20px rgba(255, 149, 0, 0.3);
+    --glow-data: 0 0 20px rgba(0, 212, 255, 0.3);
+    --glow-cooling: 0 0 20px rgba(0, 212, 255, 0.3);
+    --glow-standby: 0 0 10px rgba(120, 120, 140, 0.2);
+    --glow-focus: 0 0 0 2px hsl(var(--ring) / 0.5);
+
+    /* Card depth */
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-glow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+    /* Animation timing */
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Highlight.js - Light */
     --hljs-bg: #fafafa;
     --hljs-bg-gutter: #f0f0f0;
     --hljs-color: #383a42;
@@ -69,56 +123,88 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════════
-     DARK THEME
+     DARK THEME (Default - Control Room Aesthetic)
      ═════════════════════════════════════════════════════════════════════════ */
   .dark {
-    /* --- shadcn/ui Tailwind HSL variables --- */
-    --background: 220 15% 14%;        /* #1c2028 */
-    --foreground: 240 5% 94%;         /* #eff0f3 */
+    /* Background layers - deep charcoal with blue undertone */
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 15% 19%;              /* #282d36 */
-    --card-foreground: 240 5% 94%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 220 15% 19%;
-    --popover-foreground: 240 5% 94%;
+    --popover: 222 47% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 198 90% 53%;           /* #18bcf2 */
-    --primary-foreground: 0 0% 100%;
+    /* Primary - Cool cyan for data/controls */
+    --primary: 188 100% 47%;
+    --primary-foreground: 222 47% 6%;
 
-    --secondary: 220 15% 24%;
-    --secondary-foreground: 240 5% 94%;
+    /* Secondary */
+    --secondary: 222 47% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 15% 24%;
-    --muted-foreground: 215 20% 70%;
+    /* Muted */
+    --muted: 222 47% 15%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 198 90% 53%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent - Warm amber for heating/energy */
+    --accent: 38 100% 50%;
+    --accent-foreground: 222 47% 6%;
 
-    --destructive: 0 72% 63%;         /* #ff6b6b (red for danger/delete) */
+    /* Semantic colors */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 76 46% 48%;            /* #7cb342 (green for positive states) */
+    --success: 142 71% 45%;
     --success-foreground: 0 0% 100%;
 
-    --hot: 24 100% 65%;               /* #ff8a50 (hot temperature indicator) */
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 6%;
 
-    --border: 220 13% 30%;            /* #3a404a */
-    --input: 220 13% 30%;
-    --ring: 198 90% 53%;
+    /* Temperature indicators */
+    --hot: 24 95% 60%;
+    --cold: 199 89% 55%;
 
-    /* --- Chart theme variables --- */
-    --chart-1: 198 90% 53%;    /* dark mode primary */
-    --chart-2: 198 90% 70%;    /* dark mode lighter */
+    /* PID/Correction color */
+    --cool: 239 84% 67%;
 
-    /* --- App-specific theme variables --- */
-    --accent-secondary: #5dade2;
-    --font-body: 'Figtree', sans-serif;
-    --atmosphere-1: radial-gradient(ellipse at 10% 0%, rgba(24, 188, 242, 0.08) 0%, transparent 50%);
-    --atmosphere-2: radial-gradient(ellipse at 90% 100%, rgba(93, 173, 226, 0.06) 0%, transparent 40%);
+    /* Borders */
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
+    --ring: 188 100% 47%;
 
-    /* Highlight.js theme (atom-one-dark for YAML) */
-    --hljs-bg: #282c34;
-    --hljs-bg-gutter: #21252b;
+    /* Chart colors */
+    --chart-1: 188 100% 47%;
+    --chart-2: 188 100% 65%;
+    --chart-3: 38 100% 50%;
+
+    /* Panel backgrounds */
+    --panel-bg: 222 47% 9%;
+    --panel-border: 222 47% 16%;
+
+    /* Glow effects */
+    --glow-heating: 0 0 30px rgba(255, 149, 0, 0.4);
+    --glow-data: 0 0 30px rgba(0, 212, 255, 0.4);
+    --glow-cooling: 0 0 30px rgba(0, 212, 255, 0.4);
+    --glow-standby: 0 0 15px rgba(120, 120, 140, 0.15);
+    --glow-focus: 0 0 0 2px hsl(var(--ring) / 0.5);
+
+    /* Card depth */
+    --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.15);
+    --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.1);
+
+    /* Animation timing */
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+    --duration-slow: 400ms;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Highlight.js - Dark */
+    --hljs-bg: #1a1d23;
+    --hljs-bg-gutter: #14161a;
     --hljs-color: #abb2bf;
     --hljs-gutter-color: #636d83;
     --hljs-comment: #5c6370;

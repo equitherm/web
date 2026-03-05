@@ -2,8 +2,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import hljs from 'highlight.js/lib/core';
 import yaml from 'highlight.js/lib/languages/yaml';
-import { useStore } from '../../store/useStore';
-import { generateYAML } from '../../config/yaml';
+import { useStore } from '@/store/useStore';
+import { generateYAML } from '@/config/yaml';
 import { showToast } from '@/lib/toast';
 import {
   Dialog,
@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import styles from './YAMLModal.module.css';
 
@@ -38,13 +37,18 @@ const BookIcon = () => (
 interface YAMLModalProps {
   isOpen: boolean;
   onClose: () => void;
+  includeSensors?: boolean;
+  includeNumbers?: boolean;
 }
 
-export function YAMLModal({ isOpen, onClose }: YAMLModalProps) {
+export function YAMLModal({
+  isOpen,
+  onClose,
+  includeSensors = false,
+  includeNumbers = false,
+}: YAMLModalProps) {
   const curve = useStore(s => s.curve);
   const pid = useStore(s => s.pid);
-  const [includeSensors, setIncludeSensors] = useState(false);
-  const [includeNumbers, setIncludeNumbers] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Map store state to YAML generator params
@@ -93,7 +97,7 @@ export function YAMLModal({ isOpen, onClose }: YAMLModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[700px] p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-[95vw] sm:max-w-[700px] p-0 gap-0 overflow-hidden max-h-[90dvh] flex flex-col">
         {/* Header with Tab Style */}
         <DialogHeader className="flex flex-row items-center justify-between p-3 bg-card border-b border-border">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-t-md border border-border border-b-0 -mb-3">
@@ -101,24 +105,6 @@ export function YAMLModal({ isOpen, onClose }: YAMLModalProps) {
             <DialogTitle className="text-sm font-medium">equitherm.yaml</DialogTitle>
           </div>
         </DialogHeader>
-
-        {/* Options Bar */}
-        <div className="flex gap-4 px-4 py-2 bg-secondary border-b border-border">
-          <label className="flex items-center gap-2 text-xs text-secondary-foreground cursor-pointer">
-            <Switch
-              checked={includeSensors}
-              onCheckedChange={setIncludeSensors}
-            />
-            <span>Diagnostic sensors</span>
-          </label>
-          <label className="flex items-center gap-2 text-xs text-secondary-foreground cursor-pointer">
-            <Switch
-              checked={includeNumbers}
-              onCheckedChange={setIncludeNumbers}
-            />
-            <span>Runtime tuning</span>
-          </label>
-        </div>
 
         {/* Code Area */}
         <div className={styles.codeArea}>

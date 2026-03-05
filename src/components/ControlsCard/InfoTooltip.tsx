@@ -122,7 +122,7 @@ export function InfoTooltip({ title, children, icon, position, size }: InfoToolt
         )}
 
         {/* Body content */}
-        <div className="text-xs leading-relaxed text-secondary-foreground [&_p]:m-0 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_strong]:text-primary [&_strong]:font-medium [&_code]:bg-secondary [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[11px] [&_code]:text-[var(--accent-secondary)] [&_code]:font-mono">{children}</div>
+        <div className="text-xs leading-relaxed text-secondary-foreground [&_p]:m-0 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_strong]:text-primary [&_strong]:font-medium [&_code]:bg-secondary [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[11px] [&_code]:text-accent [&_code]:font-mono">{children}</div>
       </TooltipContent>
     </Tooltip>
   );

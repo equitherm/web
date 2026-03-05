@@ -1,9 +1,8 @@
 // src/components/PIDPanel/PIDPanel.tsx
-import { useStore } from '../../store/useStore';
+import { useStore } from '@/store/useStore';
 import { GainControls } from './GainControls';
 import { DeadbandControls } from './DeadbandControls';
 import { InfoTooltip } from '../ControlsCard/InfoTooltip';
-import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
@@ -19,7 +18,7 @@ export function PIDPanel() {
   const setPidParam = useStore(s => s.setPidParam);
 
   return (
-    <Card className={cn('flex min-w-0 h-full flex-col', !pid.enabled && 'opacity-50')}>
+    <div className={cn('flex min-w-0 flex-col', !pid.enabled && 'opacity-50')}>
       {/* Enable Header */}
       <div className="flex items-center gap-2 flex-wrap px-4 py-3 border-b border-border">
         <Switch
@@ -70,6 +69,6 @@ export function PIDPanel() {
       <div className={!pid.enabled ? 'pointer-events-none' : ''}>
         <DeadbandControls />
       </div>
-    </Card>
+    </div>
   );
 }
