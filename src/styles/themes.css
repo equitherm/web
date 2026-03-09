@@ -106,20 +106,6 @@
     --duration-slow: 400ms;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Highlight.js - Light */
-    --hljs-bg: #fafafa;
-    --hljs-bg-gutter: #f0f0f0;
-    --hljs-color: #383a42;
-    --hljs-gutter-color: #9ca3af;
-    --hljs-comment: #a0a1a7;
-    --hljs-attr: #e45649;
-    --hljs-string: #50a14f;
-    --hljs-number: #986801;
-    --hljs-bullet: #0184bb;
-    --hljs-keyword: #a626a4;
-    --hljs-literal: #0184bb;
-    --hljs-meta: #4078f2;
   }
 
   /* ═════════════════════════════════════════════════════════════════════════
@@ -201,19 +187,5 @@
     --duration-slow: 400ms;
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Highlight.js - Dark */
-    --hljs-bg: #1a1d23;
-    --hljs-bg-gutter: #14161a;
-    --hljs-color: #abb2bf;
-    --hljs-gutter-color: #636d83;
-    --hljs-comment: #5c6370;
-    --hljs-attr: #e06c75;
-    --hljs-string: #98c379;
-    --hljs-number: #d19a66;
-    --hljs-bullet: #56b6c2;
-    --hljs-keyword: #c678dd;
-    --hljs-literal: #56b6c2;
-    --hljs-meta: #61afef;
   }
 }

@@ -121,6 +121,7 @@ export function loadFromURL(): PartialStoreConfig | null {
   if (params.has('db')) config.pid!.deadbandEnabled = params.get('db') === '1';
   if (params.has('th')) config.pid!.deadbandThresholdHigh = parseFloat(params.get('th')!);
   if (params.has('tl')) config.pid!.deadbandThresholdLow = parseFloat(params.get('tl')!);
+  if (params.has('kpm')) config.pid!.deadbandKpMultiplier = parseFloat(params.get('kpm')!);
 
   return config;
 }
