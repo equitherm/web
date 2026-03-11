@@ -1,6 +1,8 @@
 {
   "name": "@equitherm-studio/web",
   "version": "0.0.1",
+  "author": "P4uLT",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {
