@@ -7,22 +7,22 @@ export const useStore = create<StoreState>((set) => ({
 
   // Curve parameters
   curve: {
-    tTarget: 21,
-    hc: 0.9,
-    n: 1.25,
+    tTarget: 19,
+    hc: 2,
+    n: 1.2,
     shift: 0,
-    minFlow: 20,
+    minFlow: 25,
     maxFlow: 70,
     tOutMin: -20,
-    tOutMax: 20,
+    tOutMax: 30,
   },
 
   // PID parameters — flat structure
   pid: {
-    enabled: true,
+    enabled: false,
     mode: 'offset',
-    roomTemp: 0,
-    kp: 1,
+    roomTemp: -1,
+    kp: 0.5,
     ki: 0,
     kd: 0,
     deadbandEnabled: true,
