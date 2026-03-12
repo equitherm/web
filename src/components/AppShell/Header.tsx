@@ -39,10 +39,7 @@ export function Header() {
           </div>
           <div className="flex flex-col">
             <span className="font-ui font-bold text-foreground text-sm leading-none tracking-tight">Equitherm</span>
-            <div className="flex items-center gap-1.5">
-              <span className="font-ui text-[0.6rem] text-muted-foreground uppercase tracking-widest">Studio</span>
-              <span className="font-mono text-[0.55rem] text-muted-foreground/60">v{__APP_VERSION__}</span>
-            </div>
+            <span className="font-ui text-[0.6rem] text-muted-foreground uppercase tracking-widest">Studio</span>
           </div>
         </div>
 
