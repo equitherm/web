@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@equitherm/core':
-        specifier: ^0.1.0
+        specifier: ^0.1.4
         version: 0.1.4
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
