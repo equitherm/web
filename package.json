@@ -33,7 +33,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "js-yaml": "^4.1.1",
-    "lucide-react": "^0.575.0",
+    "lucide-react": "^0.577.0",
     "mustache": "^4.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
