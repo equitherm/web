@@ -8,7 +8,7 @@ import { SliderVariant } from '@/components/ControlsCard/slider-variants';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { isInDeadband } from '@equitherm-studio/core';
+import { isInDeadband } from '@equitherm/core';
 import { getRoomTempActual } from '@/lib/pid';
 
 interface DeadbandInstrumentProps {

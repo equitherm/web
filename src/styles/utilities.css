@@ -3,5 +3,4 @@
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* NOTE: range-slider-primary and range-slider-ghost utilities removed.
-   Slider styling now handled by SliderVariant component in:
-   packages/web/src/components/ui/slider-variants.module.css */
+   Slider styling now handled by SliderVariant component. */

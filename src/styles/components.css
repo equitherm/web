@@ -4,7 +4,7 @@
 
 /* NOTE: temp-slider styles removed.
    Temperature slider styling now handled by SliderVariant component with
-   variant="temp" in packages/web/src/components/ui/slider-variants.module.css */
+   variant="temp". */
 
 /* ═══════════════════════════════════════════════════════════════════════════
    App Shell - Digital Control Room Layout

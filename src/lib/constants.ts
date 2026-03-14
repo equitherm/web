@@ -1,4 +1,4 @@
-import type { DeadbandConfig } from '@equitherm-studio/core';
+import type { DeadbandConfig } from '@equitherm/core';
 
 // Single curve parameter limit
 export interface ParamLimit {

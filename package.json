@@ -1,8 +1,9 @@
 {
-  "name": "@equitherm-studio/web",
+  "name": "@equitherm/web",
   "version": "0.1.0",
   "author": "P4uLT",
   "license": "MIT",
+  "packageManager": "pnpm@9.12.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@equitherm-studio/core": "workspace:*",
+    "@equitherm/core": "^0.1.4",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -61,7 +62,6 @@
     "tailwindcss": "3.4.17",
     "typescript": "^5.9.3",
     "vite": "^5.4.0",
-    "vite-plugin-singlefile": "^2.0.0",
     "vitest": "^2.0.0"
   }
 }
