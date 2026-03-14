@@ -1,5 +1,5 @@
 {
-  "name": "@equitherm-studio/web",
+  "name": "@equitherm/web",
   "version": "0.1.0",
   "author": "P4uLT",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@equitherm-studio/core": "workspace:*",
+    "@equitherm/core": "^0.1.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
