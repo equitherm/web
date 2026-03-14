@@ -1,4 +1,3 @@
-// packages/web/src/components/Chart/useComputedFlow.ts
 import { useMemo } from 'react';
 import { computeFlowTemperature, computePID } from '@equitherm/core';
 import { getRoomTempActual } from '@/lib/pid';

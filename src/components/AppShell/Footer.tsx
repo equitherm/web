@@ -2,7 +2,7 @@
 import { Github, ExternalLink, Flame, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const REPO_URL = 'https://github.com/P4uLT/equitherm-studio';
+const REPO_URL = 'https://github.com/equitherm/web';
 const ESPHOME_DOCS = 'https://esphome.io/components/climate/equitherm/';
 const ESPHOME_WEB = 'https://esphome.io/';
 

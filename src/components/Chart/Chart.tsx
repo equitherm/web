@@ -1,4 +1,3 @@
-// packages/web/src/components/Chart/Chart.tsx
 import { useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceDot } from 'recharts';
 import {
