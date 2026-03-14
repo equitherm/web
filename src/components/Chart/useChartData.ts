@@ -1,6 +1,6 @@
 // packages/web/src/components/Chart/useChartData.ts
 import { useMemo } from 'react';
-import { computeFlowTemperature } from '@equitherm-studio/core';
+import { computeFlowTemperature } from '@equitherm/core';
 import type { CurveState } from '@/types';
 
 export interface ChartDataPoint {

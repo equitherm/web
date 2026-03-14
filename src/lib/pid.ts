@@ -1,4 +1,4 @@
-import type { DeadbandConfig } from '@equitherm-studio/core';
+import type { DeadbandConfig } from '@equitherm/core';
 
 // Web-specific PID parameters (includes UI concerns like mode and roomTemp)
 export interface DefaultPIDParams {
