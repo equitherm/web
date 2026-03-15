@@ -6,9 +6,11 @@
 
 [![CI](https://github.com/equitherm/web/actions/workflows/ci.yml/badge.svg)](https://github.com/equitherm/web/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://equitherm.org)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://equitherm.netlify.app)
 
-[**→ Open the app**](https://equitherm.org)
+[**→ Open the app**](https://equitherm.netlify.app)
+
+<img src="docs/screenshot.png" alt="equitherm-web interface" width="100%">
 
 </div>
 
@@ -49,7 +51,7 @@ Configuring an equitherm heating curve means tuning several interdependent param
 
 ## Try it
 
-**No install needed.** Open [https://equitherm.org](https://equitherm.org) in any modern browser.
+**No install needed.** Open [https://equitherm.netlify.app](https://equitherm.netlify.app) in any modern browser.
 
 To share your configuration, click **Share** in the header — the URL encodes all parameters and can be sent directly.
 

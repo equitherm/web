@@ -1,20 +1,43 @@
 # Dependencies
 node_modules/
 
-# Build output
+# Build outputs
 dist/
 
-# TypeScript cache
-*.tsbuildinfo
+# Environment files
+.env
+.env.local
+.env.*.local
 
-# IDE
-.vscode/
+# IDE / Editor
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Environment
-.env
-.env.local
+# Logs
+*.log
+npm-debug.log*
+
+# pnpm lock file is committed for reproducible builds
+
+# Git worktrees
+.worktrees/
+
+# Planning documents (local)
+docs/plans/
+
+# mise local config
+mise.local.toml
+.turbo/
+
+# Claude Code local
+.claude/
+
+# Playwright CLI cache
+.playwright-cli/

@@ -37,10 +37,7 @@ export function Header() {
           <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent/10 border border-accent/30 shadow-glow-heating transition-shadow duration-normal">
             <Flame className="w-5 h-5 text-accent" />
           </div>
-          <div className="flex flex-col">
-            <span className="font-ui font-bold text-foreground text-sm leading-none tracking-tight">Equitherm</span>
-            <span className="font-ui text-[0.6rem] text-muted-foreground uppercase tracking-widest">Studio</span>
-          </div>
+          <span className="font-ui font-bold text-foreground text-sm leading-none tracking-tight">Equitherm</span>
         </div>
 
         {/* Output Display - Main Hero */}
