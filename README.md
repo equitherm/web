@@ -10,6 +10,8 @@
 
 [**→ Open the app**](https://equitherm.netlify.app)
 
+<img src="docs/screenshot.png" alt="equitherm-web interface" width="100%">
+
 </div>
 
 ---
