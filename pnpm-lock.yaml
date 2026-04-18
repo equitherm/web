@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@equitherm/core':
-        specifier: ^0.1.4
-        version: 0.1.4
+        specifier: ^0.1.7
+        version: 0.1.7
       '@radix-ui/react-accordion':
         specifier: ^1.2.12
         version: 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -350,8 +350,8 @@ packages:
     peerDependencies:
       '@noble/ciphers': ^1.0.0
 
-  '@equitherm/core@0.1.4':
-    resolution: {integrity: sha512-op3sY/SixgXIxVcGeazQc4W6UxMRoE+DnLvOVltJWA4mt8OyDGa1B4hl2Blic0IA7crUmwmUp97c8NBwg+mxPA==}
+  '@equitherm/core@0.1.7':
+    resolution: {integrity: sha512-82oenIkhGO62sMnK8zTcitSmUgWI+4/a+C7zCIoisVd9jrx2oH+SZGaSF1bOmd9woBJKYc0f4Uy5BGCFohWINQ==}
     engines: {node: '>=22'}
 
   '@esbuild/aix-ppc64@0.21.5':
@@ -3630,7 +3630,7 @@ snapshots:
     dependencies:
       '@noble/ciphers': 1.3.0
 
-  '@equitherm/core@0.1.4': {}
+  '@equitherm/core@0.1.7': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
