@@ -27,8 +27,9 @@ export function useChartData(
         maxFlow: curve.maxFlow,
       });
 
+      // Combined follows equitherm — 0 during WWS (equitherm=0 from core)
       const combined = pidEnabled
-        ? Math.max(curve.minFlow, Math.min(curve.maxFlow, equitherm + pidCorrection))
+        ? equitherm === 0 ? 0 : Math.max(curve.minFlow, Math.min(curve.maxFlow, equitherm + pidCorrection))
         : undefined;
 
       points.push({

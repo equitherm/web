@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceDot } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceDot, ReferenceArea } from 'recharts';
 import {
   ChartConfig,
   ChartContainer,
@@ -64,9 +64,13 @@ export function HeatingChart() {
     return lower + (upper - lower) * t;
   };
 
-  const currentFlowY = pid.enabled
+  // During WWS, track equitherm line regardless of PID (output suppressed)
+  const trackCombined = pid.enabled && status !== 'wws';
+  const currentFlowY = trackCombined
     ? interpolateY(lowerPoint?.combined, upperPoint?.combined) ?? combinedFlow
     : interpolateY(lowerPoint?.equitherm, upperPoint?.equitherm) ?? equithermFlow;
+
+  const isWWS = status === 'wws';
 
   return (
     <section className="@container bg-card rounded-xl p-4 border border-border h-full min-h-[300px] @lg:min-h-[400px] @xl:min-h-[500px] flex flex-col shadow-card">
@@ -171,38 +175,39 @@ export function HeatingChart() {
             />
           )}
 
-          {/* Current position dot - updates independently of lines */}
+          {/* WWS zone — shaded area from tTarget to tOutMax */}
+          {isWWS && (
+            <ReferenceArea
+              x1={curve.tTarget}
+              x2={curve.tOutMax}
+              fill="rgba(255, 167, 38, 0.08)"
+              stroke="none"
+            />
+          )}
+
+          {/* Current position dot */}
           {currentFlowY != null && (
             <ReferenceDot
               x={tCurrent}
               y={currentFlowY}
               r={8}
-              fill="var(--color-combined)"
+              fill={isWWS ? '#f59e0b' : 'var(--color-combined)'}
               stroke="hsl(var(--background))"
               strokeWidth={3}
-              className="chart-marker-glow"
+              className={isWWS ? '' : 'chart-marker-glow'}
               shape={(props: any) => {
                 const { cx, cy } = props;
+                if (isWWS) {
+                  return (
+                    <g>
+                      <circle cx={cx} cy={cy} r={6} fill="#f59e0b" opacity={0.7} stroke="hsl(var(--background))" strokeWidth={2} />
+                    </g>
+                  );
+                }
                 return (
                   <g>
-                    {/* Outer glow ring */}
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      r={14}
-                      fill="var(--color-combined)"
-                      opacity={0.2}
-                      className="animate-pulse"
-                    />
-                    {/* Main dot */}
-                    <circle
-                      cx={cx}
-                      cy={cy}
-                      r={8}
-                      fill="var(--color-combined)"
-                      stroke="hsl(var(--background))"
-                      strokeWidth={3}
-                    />
+                    <circle cx={cx} cy={cy} r={14} fill="var(--color-combined)" opacity={0.2} className="animate-pulse" />
+                    <circle cx={cx} cy={cy} r={8} fill="var(--color-combined)" stroke="hsl(var(--background))" strokeWidth={3} />
                   </g>
                 );
               }}

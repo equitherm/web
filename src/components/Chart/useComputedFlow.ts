@@ -27,6 +27,12 @@ export function useComputedFlow(
       maxFlow: curve.maxFlow,
     });
 
+    // WWS: core returns 0 when outdoor >= target — check kept for UI status
+    const deltaT = curve.tTarget - tCurrent;
+    if (deltaT <= 0) {
+      return { equithermFlow, pidCorrection: 0, combinedFlow: equithermFlow, status: 'wws' };
+    }
+
     // Compute PID correction if enabled
     let pidCorrection = 0;
     let combinedFlow = equithermFlow;
@@ -55,11 +61,7 @@ export function useComputedFlow(
     }
 
     // Compute status
-    const deltaT = curve.tTarget - tCurrent;
-    let status: ComputedStatus = 'standby';
-    if (deltaT > 0) {
-      status = combinedFlow < 45 ? 'heating' : 'high-load';
-    }
+    const status: ComputedStatus = combinedFlow < 45 ? 'heating' : 'high-load';
 
     return { equithermFlow, pidCorrection, combinedFlow, status };
   }, [curve, pid, tCurrent]);

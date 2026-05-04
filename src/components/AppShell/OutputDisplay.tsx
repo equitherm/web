@@ -44,7 +44,10 @@ export function OutputDisplay() {
   const setTCurrent = useStore(s => s.setTCurrent);
   const computed = useStore(s => s.computed);
   const pidEnabled = useStore(s => s.pid.enabled);
+  const tTarget = useStore(s => s.curve.tTarget);
+  const isWWS = computed.status === 'wws';
   const pidOutput = computed.pidRawOutput ?? 0;
+  const displayFlow = isWWS ? '--' : (computed.flowTemp?.toFixed(1) ?? '--');
 
   return (
     <div className="flex items-stretch justify-center gap-4">
@@ -83,23 +86,28 @@ export function OutputDisplay() {
       </div>
 
       {/* Flow Output - Hero Element */}
-      <div className="flex flex-col items-center justify-center gap-2 min-w-[100px] lg:min-w-[140px] shrink-0 bg-secondary/30 rounded-lg border border-border px-4 py-3">
+      <div className="flex flex-col items-center justify-center gap-2 min-w-[100px] lg:min-w-[140px] shrink-0 bg-secondary/30 rounded-lg border border-border px-4 py-3 min-h-[7.5rem]">
         <span className="text-[0.65rem] md:text-xs font-ui font-medium text-muted-foreground uppercase tracking-wider">
           Flow Temperature
         </span>
         <DigitalDisplay
-          value={computed.flowTemp?.toFixed(1) ?? '--'}
+          value={displayFlow}
+          unit="°C"
           size="4xl"
           variant="heating"
-          showGlow
+          showGlow={!isWWS}
         />
-        <StatusIndicator status={computed.status} />
+        <StatusIndicator
+          status={computed.status}
+          tOutdoor={tCurrent}
+          tTarget={tTarget}
+        />
         {/* PID delta badge — space always reserved to prevent layout shift */}
         <Badge
           variant="outline"
           className={cn(
             'px-2 py-0.5 text-[0.65rem] font-ui font-medium uppercase tracking-wider tabular-nums transition-all duration-normal',
-            pidEnabled && pidOutput !== 0 ? 'visible' : 'invisible',
+            !isWWS && pidEnabled && pidOutput !== 0 ? 'visible' : 'invisible',
             pidOutput >= 0
               ? 'bg-success/20 text-success border-success/30'
               : 'bg-destructive/20 text-destructive border-destructive/30'

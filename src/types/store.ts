@@ -35,7 +35,7 @@ export interface UIState {
 }
 
 // Computed state slice
-export type ComputedStatus = 'heating' | 'cooling' | 'standby' | 'high-load';
+export type ComputedStatus = 'heating' | 'cooling' | 'standby' | 'high-load' | 'wws';
 
 export interface ComputedState {
   flowTemp: number | null;

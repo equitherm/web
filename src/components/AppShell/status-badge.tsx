@@ -1,15 +1,16 @@
 // src/components/ui/status-badge.tsx
+import { Sun } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-export type StatusVariant = 'heating' | 'cooling' | 'standby' | 'high-load';
+export type StatusVariant = 'heating' | 'cooling' | 'standby' | 'high-load' | 'wws';
 
 interface StatusBadgeProps {
   status: StatusVariant;
   className?: string;
 }
 
-const statusConfig: Record<StatusVariant, { label: string; className: string }> = {
+const statusConfig: Record<StatusVariant, { label: string; icon?: typeof Sun; className: string }> = {
   heating: {
     label: 'Heating',
     className: 'bg-accent/20 text-accent border-accent/30 shadow-glow-heating',
@@ -26,10 +27,16 @@ const statusConfig: Record<StatusVariant, { label: string; className: string }> 
     label: 'High Load',
     className: 'bg-destructive/20 text-destructive border-destructive/30',
   },
+  wws: {
+    label: 'Standby',
+    icon: Sun,
+    className: 'bg-amber-500/20 text-amber-500 border-amber-500/30',
+  },
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const config = statusConfig[status];
+  const Icon = config.icon;
 
   return (
     <Badge
@@ -41,6 +48,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         className
       )}
     >
+      {Icon && <Icon className="h-3 w-3 mr-1" />}
       {config.label}
     </Badge>
   );
