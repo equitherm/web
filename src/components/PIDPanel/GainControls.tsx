@@ -79,7 +79,7 @@ export function GainControls() {
         <GainInstrument
           label="Kp — Proportional"
           min={0}
-          max={5}
+          max={20}
           step={0.1}
           value={pid.kp}
           onChange={v => setPidParam('kp', v)}

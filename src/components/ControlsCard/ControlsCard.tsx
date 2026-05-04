@@ -75,7 +75,7 @@ export function ControlsCard() {
         id="hc"
         label="Heat Curve (hc)"
         min={0.5}
-        max={3}
+        max={5}
         step={0.05}
         value={curve.hc}
         unit=""
@@ -91,8 +91,8 @@ export function ControlsCard() {
       <SliderControl
         id="n"
         label="Exponent (n)"
-        min={1.0}
-        max={2.0}
+        min={0.5}
+        max={3.0}
         step={0.01}
         value={curve.n}
         unit=""
@@ -109,8 +109,8 @@ export function ControlsCard() {
       <SliderControl
         id="shift"
         label="Shift"
-        min={-15}
-        max={15}
+        min={-20}
+        max={20}
         step={0.5}
         value={curve.shift}
         unit="°C"
